@@ -1066,9 +1066,35 @@ a {
   }
 }
 
+/* The app is a client-rendered SPA, so without JavaScript the root is empty.
+   This block is the only thing a no-JS visitor sees, and it carries the
+   essential links as real text. */
+.noscript {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+  color: var(--text);
+}
+.noscript h1 {
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  margin-bottom: 0.75rem;
+}
+.noscript ul {
+  margin-top: 1rem;
+  padding-left: 1.25rem;
+  color: var(--text-muted);
+}
+.noscript li + li {
+  margin-top: 0.35rem;
+}
+
 /* Must stay last so it wins over the dark-scheme token block. Printing a dark
    card wastes toner and drops the QR's white quiet zone, so force light. */
 @media print {
+  .noscript {
+    display: none;
+  }
   :root,
   :root[data-theme='dark'] {
     --bg: #ffffff;

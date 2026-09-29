@@ -215,6 +215,12 @@ hover／selected 不改色，而是疊一層半透明遮罩，因此同一組 to
 - `rgb()` 沒有 alpha 插槽，須先判斷元數量再取第 4 個值。
 - `display: none` 量測得 `0×0` 而非 `null`，響應式斷言須區分「隱藏」與「不存在」。
 - `aria-current` 在未捲動到任何區段時不存在，量測前必須先捲動。
+- `rgb()` 沒有 alpha 插槽，須先判斷元數量再取第 4 個值。
+- axe 會把**計算後的 opacity** 算進對比檢查，因此在淡入尚未結束時取樣會誤報
+  `color-contrast`。稽核前必須先讓所有 reveal 收斂，並連跑兩次確認不是競態。
+- 無 JS 時 `<div id="root">` 本來就是空的（純 SPA）；斷言必須排除 `script`／`style`
+  的文字，否則會把 inline script 的原始碼算成「頁面內容」而假通過。已補上
+  `<noscript>` 區塊提供純文字版本，並直接斷言其存在。
 
 ## 授權
 
