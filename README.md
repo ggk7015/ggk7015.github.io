@@ -32,11 +32,23 @@ TypeScript 以 `strict` 編譯，另開 `noImplicitOverride`、`noUncheckedSideE
 
 - **GitHub Pages** — push 到 `main` 觸發 `.github/workflows/deploy.yml`，
   正式網址 <https://ggk7015.github.io/>
-- **Vercel** — 專案名 `ggk5743`，`vercel.json` 指定 `npm run build` → `dist`，
-  並為 `/assets/*` 與 `/fonts/*` 設定 immutable 快取
+- **Vercel** — 專案 `ggk7015s-projects/ggk7015.github.io`，
+  正式網址 <https://ggk7015githubio.vercel.app>
 
 兩個環境使用同一份 Vite 建置結果，`base` 預設 `/` 即可運作。
 `index.html` 的 `canonical` 與 `og:url` 固定指向 GitHub Pages，Vercel 視為鏡像站。
+
+`vercel.json` 指定 `npm run build` → `dist`，並為 `/assets/*` 與 `/fonts/*`
+設定 `max-age=31536000, immutable`，其餘靜態資源為 7 天。
+
+> **Vercel 自動部署尚未啟用。** Vercel GitHub App 尚未取得 `ggk7015/ggk7015.github.io`
+> 的存取權，因此 `vercel git connect` 會失敗。要讓每次 push 自動部署，需在
+> Vercel 後台「Settings → Git → Connect GitHub Repository」授權該 repo。
+> 在授權之前，Vercel 端以 CLI 發布：
+>
+> ```bash
+> npx vercel --prod
+> ```
 
 ## QR 碼
 
