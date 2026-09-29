@@ -1,4 +1,5 @@
 import { experiences } from '../data/profile'
+import { stagger } from '../lib/motion'
 
 export default function Experience() {
   return (
@@ -13,8 +14,8 @@ export default function Experience() {
       </p>
 
       <ul className="rows">
-        {experiences.map((item) => (
-          <li key={item.area} className="row">
+        {experiences.map((item, i) => (
+          <li key={item.area} className="row" data-reveal style={stagger(i)}>
             <div className="row__main">
               <h3 className="row__area">{item.area}</h3>
               <p className="row__detail">{item.detail}</p>

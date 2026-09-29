@@ -12,6 +12,31 @@
     <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0e1015" media="(prefers-color-scheme: dark)" />
 
+    <script>
+      // Pre-paint, so neither the stored theme nor the reduced-motion gate can flash.
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme')
+          if (stored === 'light' || stored === 'dark') {
+            document.documentElement.setAttribute('data-theme', stored)
+          }
+        } catch (e) {
+          // Storage blocked: fall through to the OS preference.
+        }
+        var motion =
+          'IntersectionObserver' in window &&
+          !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+        if (motion) {
+          var root = document.documentElement
+          root.classList.add('js-motion')
+          // Failsafe: if the bundle never mounts, stop hiding the content.
+          window.__revealFailsafe = window.setTimeout(function () {
+            root.classList.remove('js-motion')
+          }, 4000)
+        }
+      })()
+    </script>
+
     <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png" />
     <link rel="apple-touch-icon" href="/favicon-180.png" />
     <link rel="canonical" href="https://ggk7015.github.io/" />

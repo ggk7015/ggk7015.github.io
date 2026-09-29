@@ -15,8 +15,18 @@
   --warn-border: #f0b464;
   --radius: 14px;
   --shadow: 0 1px 2px rgb(16 24 40 / 6%), 0 8px 24px rgb(16 24 40 / 6%);
+  --shadow-hover: 0 2px 4px rgb(16 24 40 / 6%), 0 14px 32px rgb(16 24 40 / 10%);
   --maxw: 880px;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+  --dur-4: 480ms;
+  --reveal-shift: 14px;
+  --stagger: 60ms;
+  --topbar-h: 3.25rem;
+  --control-h: 2.75rem;
   --font-sans: 'DM Sans', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', -apple-system,
     BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-display: 'Instrument Serif', 'Noto Serif TC', 'Songti TC', Georgia, serif;
@@ -30,8 +40,11 @@
   color-scheme: light;
 }
 
+/* Dark tokens live in two places on purpose: once for an OS that is already dark
+   and has not made an explicit choice, once for an explicit in-page choice.
+   CSS has no mixins, so the block is repeated rather than abstracted. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --bg: #0e1015;
     --surface: #171a21;
     --surface-2: #1e222b;
@@ -45,8 +58,27 @@
     --warn-fg: #ffca7a;
     --warn-border: #7a5320;
     --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 8px 24px rgb(0 0 0 / 30%);
+    --shadow-hover: 0 2px 4px rgb(0 0 0 / 45%), 0 14px 32px rgb(0 0 0 / 42%);
     color-scheme: dark;
   }
+}
+
+:root[data-theme='dark'] {
+  --bg: #0e1015;
+  --surface: #171a21;
+  --surface-2: #1e222b;
+  --text: #e8eaf0;
+  --text-muted: #9aa3b2;
+  --border: #2a2f3a;
+  --accent: #6ea8ff;
+  --accent-contrast: #0b0e14;
+  --stars: #d99b1a;
+  --warn-bg: #33240f;
+  --warn-fg: #ffca7a;
+  --warn-border: #7a5320;
+  --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 8px 24px rgb(0 0 0 / 30%);
+  --shadow-hover: 0 2px 4px rgb(0 0 0 / 45%), 0 14px 32px rgb(0 0 0 / 42%);
+  color-scheme: dark;
 }
 
 * {
@@ -96,6 +128,231 @@ a {
 .skip-link:focus {
   left: 0;
 }
+
+/* Visually hidden, still announced and still focusable. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Topbar ---------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: var(--topbar-h);
+  padding: 0.35rem clamp(1rem, 4vw, calc((100% - var(--maxw)) / 2 + 1.25rem));
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+/* ---------- Section nav ---------- */
+/* The nav and the theme toggle sit side by side in the topbar, so they share one
+   control height (also the 44px tap target) instead of centring at two sizes. */
+.section-nav__list,
+.theme-toggle {
+  height: var(--control-h);
+  box-sizing: border-box;
+}
+
+.section-nav__list {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0.2rem;
+  list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+.section-nav__link {
+  display: block;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--dur-1) var(--ease), background-color var(--dur-2) var(--ease);
+}
+.section-nav__link:hover {
+  color: var(--text);
+}
+.section-nav__link[aria-current='true'] {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 600;
+}
+
+/* ---------- Theme toggle ---------- */
+.theme-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.2rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+.theme-toggle__option {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+.theme-toggle__pill {
+  display: flex;
+  align-items: center;
+  padding: 0.32rem;
+  border-radius: 999px;
+  color: var(--text-muted);
+  transition: color var(--dur-1) var(--ease), background-color var(--dur-2) var(--ease);
+}
+.theme-toggle__option:hover .theme-toggle__pill {
+  color: var(--text);
+}
+/* The radio itself is .sr-only, so the ring is drawn on its visible proxy.
+   The input keeps the global :focus-visible outline, which the audit reads. */
+.theme-toggle__option:focus-within .theme-toggle__pill {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+.theme-toggle__option input:checked + .theme-toggle__pill {
+  background: var(--surface-2);
+  color: var(--accent);
+}
+
+/* ---------- Scroll progress ---------- */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+/* ---------- Back to top ---------- */
+.back-to-top {
+  position: fixed;
+  right: clamp(0.75rem, 3vw, 1.5rem);
+  bottom: clamp(0.75rem, 3vw, 1.5rem);
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease),
+    color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+  animation: back-to-top-in var(--dur-3) var(--ease) both;
+}
+.back-to-top:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: var(--shadow-hover);
+}
+@keyframes back-to-top-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Anchor targets clear the sticky topbar instead of hiding beneath it. */
+#work,
+#experience,
+#skills {
+  scroll-margin-top: calc(var(--topbar-h) + 1rem);
+}
+
+/* ---------- Motion (progressive enhancement) ----------
+   The `js-motion` class is added pre-paint by the inline head script and only
+   when IntersectionObserver exists and reduced motion is not requested. Without
+   it none of the rules below match, so the page renders fully visible. */
+.js-motion [data-reveal] {
+  opacity: 0;
+  transform: translateY(var(--reveal-shift));
+  transition: opacity var(--dur-4) var(--ease), transform var(--dur-4) var(--ease);
+  transition-delay: calc(var(--i, 0) * var(--stagger));
+  will-change: opacity, transform;
+}
+.js-motion [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+.js-motion .hero__portraits,
+.js-motion .hero__name,
+.js-motion .hero__tagline,
+.js-motion .hero__bio,
+.js-motion .hero__links,
+.js-motion .hero__note,
+.js-motion .hero__qr {
+  animation: hero-rise var(--dur-4) var(--ease) both;
+  animation-delay: calc(var(--i, 0) * var(--stagger));
+}
+.js-motion .hero__portraits {
+  --i: 0;
+}
+.js-motion .hero__name {
+  --i: 1;
+}
+.js-motion .hero__tagline {
+  --i: 2;
+}
+.js-motion .hero__bio {
+  --i: 3;
+}
+.js-motion .hero__links {
+  --i: 4;
+}
+.js-motion .hero__note {
+  --i: 5;
+}
+.js-motion .hero__qr {
+  --i: 6;
+}
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--reveal-shift) / 2));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 
 .page {
   max-width: var(--maxw);
@@ -173,12 +430,13 @@ a {
   text-decoration: none;
   color: var(--text);
   box-shadow: var(--shadow);
-  transition: transform 0.15s var(--ease), border-color 0.15s var(--ease),
-    box-shadow 0.2s var(--ease);
+  transition: transform var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease),
+    box-shadow var(--dur-2) var(--ease);
 }
 .link-btn:hover {
   transform: translateY(-2px);
   border-color: var(--accent);
+  box-shadow: var(--shadow-hover);
 }
 .link-btn svg {
   flex: none;
@@ -338,6 +596,25 @@ a {
   background: var(--warn-bg);
   color: var(--warn-fg);
   border: 1px solid var(--warn-border);
+}
+
+/* Every raised surface shares one lift-and-settle response. */
+.stats__item,
+.card,
+.row,
+.skill-group {
+  transition: transform var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease),
+    border-color var(--dur-2) var(--ease);
+}
+@media (hover: hover) {
+  .stats__item:hover,
+  .card:hover,
+  .row:hover,
+  .skill-group:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+    box-shadow: var(--shadow-hover);
+  }
 }
 
 /* ---------- Cards ---------- */
@@ -522,5 +799,46 @@ a {
   }
   .link-btn:hover {
     transform: none;
+  }
+  .back-to-top:hover,
+  .stats__item:hover,
+  .card:hover,
+  .row:hover,
+  .skill-group:hover {
+    transform: none;
+  }
+  /* Never leave content parked at the start of a reveal it will not play. */
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Must stay last so it wins over the dark-scheme token block. Printing a dark
+   card wastes toner and drops the QR's white quiet zone, so force light. */
+@media print {
+  :root,
+  :root[data-theme='dark'] {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #f0f2f5;
+    --text: #16181d;
+    --text-muted: #5b6270;
+    --border: #dfe3ea;
+    --accent: #2a63d4;
+    --accent-contrast: #ffffff;
+    --stars: #9a6600;
+    color-scheme: light;
+  }
+  .topbar,
+  .back-to-top {
+    display: none;
+  }
+  .section,
+  .card,
+  .row,
+  .skill-group,
+  .stats__item {
+    break-inside: avoid;
   }
 }

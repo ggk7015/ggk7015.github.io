@@ -32,9 +32,11 @@ TypeScript 以 `strict` 編譯，另開 `noImplicitOverride`、`noUncheckedSideE
 
 - **GitHub Pages** — push 到 `main` 觸發 `.github/workflows/deploy.yml`，
   正式網址 <https://ggk7015.github.io/>
-- **Vercel** — 專案名 `ggk5743`，`vercel.json` 指定 `npm run build` → `dist`
+- **Vercel** — 專案名 `ggk5743`，`vercel.json` 指定 `npm run build` → `dist`，
+  並為 `/assets/*` 與 `/fonts/*` 設定 immutable 快取
 
 兩個環境使用同一份 Vite 建置結果，`base` 預設 `/` 即可運作。
+`index.html` 的 `canonical` 與 `og:url` 固定指向 GitHub Pages，Vercel 視為鏡像站。
 
 ## QR 碼
 
@@ -54,6 +56,36 @@ TypeScript 以 `strict` 編譯，另開 `noImplicitOverride`、`noUncheckedSideE
   與深色表面上均達 4.5:1。兩色皆以 token 隨主題切換，勿寫死單一色碼。
 - **無障礙**：以 axe-core 於淺色／深色模式掃描皆為 0 違規，另涵蓋跳至主內容連結、
   單一 `h1`、標題階層、里程碑地標、鍵盤焦點環、200% 文字縮放與列印樣式。
+- **動效**：所有動畫皆為漸進增強，**不引入任何動畫函式庫**，僅用 CSS 與
+  `IntersectionObserver`。
+  - `<head>` 的 inline script 在繪製前決定兩件事：還原儲存的主題，以及在
+    `IntersectionObserver` 可用且未要求減少動態時加上 `js-motion` class。
+  - `[data-reveal]` 元素只有在 `js-motion` 存在時才會先隱藏，因此**沒有 JavaScript
+    或使用者要求減少動態時，內容一律直接可見**。
+  - `useReveal` 為保險起見另掛 scroll 監聽：按 End 鍵、跳至 `#hash` 或還原捲動位置
+    都可能一次越過整段內容，僅靠 `IntersectionObserver` 會讓被略過的元素停在
+    `opacity: 0`。
+  - inline script 另設 4 秒 fallback，React 若未掛載就移除 `js-motion`；`useReveal`
+    掛載後會取消該計時器。
+  - 統計數字採 count-up，遞增中的數字 `aria-hidden`，真實數值以 `.sr-only` 並列，
+    避免螢幕閱讀器逐格朗讀。
+  - 動效時長收斂為 `--dur-1..4`（120/200/320/480ms），曲線只用
+    `cubic-bezier(0.16, 1, 0.3, 1)` 與 `cubic-bezier(0.4, 0, 0.2, 1)`，不使用任何
+    回彈（bounce／elastic）曲線。`prefers-reduced-motion: reduce` 下停用整個動效引擎
+    且強制 `[data-reveal]` 可見。
+
+## 互動
+
+| 元件 | 行為 |
+| --- | --- |
+| 頂部工具列 | sticky；左側為區段導覽，右側為主題切換 |
+| 區段導覽 | 以中央視窗帶狀 `rootMargin` 做 scroll-spy，當前區段標 `aria-current="true"` |
+| 主題切換 | 原生 radio（`role="radiogroup"`）三選一：跟隨系統／淺色／深色；寫入 `localStorage`，並以 `<html data-theme>` 覆寫系統偏好 |
+| 捲動進度 | 2px 定寬條，`transform: scaleX()` 由 rAF 節流更新，`aria-hidden` |
+| 回到頂端 | 捲動超過 600px 才渲染，44px 觸控目標，減少動態時改為瞬間跳轉 |
+| 卡片 | 進場 `data-reveal` 交錯（`--stagger`），`hover` 時統一上浮並加深陰影 |
+
+錨點目標設有 `scroll-margin-top`，不會被 sticky 工具列遮住。
 
 ## 授權
 

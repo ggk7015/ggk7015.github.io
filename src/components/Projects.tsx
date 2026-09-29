@@ -1,4 +1,5 @@
 import { projects } from '../data/profile'
+import { stagger } from '../lib/motion'
 
 export default function Projects() {
   return (
@@ -11,8 +12,8 @@ export default function Projects() {
       </p>
 
       <ul className="cards">
-        {projects.map((project) => (
-          <li key={project.name} className="card">
+        {projects.map((project, i) => (
+          <li key={project.name} className="card" data-reveal style={stagger(i)}>
             <div className="card__head">
               <h3 className="card__name">{project.name}</h3>
               {project.stars ? <span className="card__stars">★ {project.stars}</span> : null}

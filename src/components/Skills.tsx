@@ -1,4 +1,5 @@
 import { skills } from '../data/profile'
+import { stagger } from '../lib/motion'
 
 export default function Skills() {
   return (
@@ -9,8 +10,8 @@ export default function Skills() {
       <p className="section__lead">每項技能皆可回溯到上方原創作品中的實際使用。</p>
 
       <div className="skill-groups">
-        {skills.map((group) => (
-          <div key={group.category} className="skill-group">
+        {skills.map((group, i) => (
+          <div key={group.category} className="skill-group" data-reveal style={stagger(i)}>
             <h3 className="skill-group__name">{group.category}</h3>
             <ul className="chips">
               {group.items.map((item) => (

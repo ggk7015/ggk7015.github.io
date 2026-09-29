@@ -3,14 +3,26 @@ import Stats from './components/Stats'
 import Projects from './components/Projects'
 import Experience from './components/Experience'
 import Skills from './components/Skills'
+import SectionNav from './components/SectionNav'
+import ThemeToggle from './components/ThemeToggle'
+import ScrollProgress from './components/ScrollProgress'
+import BackToTop from './components/BackToTop'
+import { useReveal } from './hooks/useReveal'
 import { profile } from './data/profile'
 
 export default function App() {
+  useReveal()
+
   return (
     <>
       <a className="skip-link" href="#work">
         跳到主要內容
       </a>
+      <ScrollProgress />
+      <header className="topbar">
+        <SectionNav />
+        <ThemeToggle />
+      </header>
       <main className="page">
         <Hero />
         <Stats />
@@ -25,6 +37,7 @@ export default function App() {
             原始碼
           </a>
         </p>
+        <BackToTop />
       </footer>
     </>
   )
