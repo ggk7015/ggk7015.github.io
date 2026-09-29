@@ -75,6 +75,24 @@ export default function Hero() {
           <QRCode value={origin} />
         </div>
       )}
+
+      <a className="hero__cue" href="#work">
+        往下看作品
+        <svg
+          viewBox="0 0 24 24"
+          width={16}
+          height={16}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.8}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M12 5v13M5.5 12.5 12 19l6.5-6.5" />
+        </svg>
+      </a>
     </header>
   )
 }

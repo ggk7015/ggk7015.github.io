@@ -1,4 +1,5 @@
 import { useState, type ReactElement } from 'react'
+import { useResolvedScheme } from '../hooks/useResolvedScheme'
 import { applyThemePreference, readThemePreference, type ThemePreference } from '../lib/theme'
 
 type Option = { value: ThemePreference; label: string; icon: () => ReactElement }
@@ -62,7 +63,7 @@ function SystemIcon() {
 }
 
 const OPTIONS: Option[] = [
-  { value: 'system', label: '跟隨系統', icon: SystemIcon },
+  { value: 'system', label: '自動', icon: SystemIcon },
   { value: 'light', label: '淺色', icon: SunIcon },
   { value: 'dark', label: '深色', icon: MoonIcon },
 ]
@@ -71,6 +72,7 @@ export default function ThemeToggle() {
   // Initialised from storage rather than an effect so the checked pill matches
   // the pre-paint value applied by the inline head script (no flash, no drift).
   const [preference, setPreference] = useState<ThemePreference>(readThemePreference)
+  const resolved = useResolvedScheme()
 
   function choose(next: ThemePreference) {
     setPreference(next)
@@ -87,11 +89,16 @@ export default function ThemeToggle() {
             name="theme-preference"
             value={value}
             checked={preference === value}
+            // Visible text is only two glyphs; the accessible name spells out
+            // which mode "follow the system" currently resolves to.
+            aria-label={
+              value === 'system' ? `跟隨系統，目前為${resolved === 'dark' ? '深色' : '淺色'}` : label
+            }
             onChange={() => choose(value)}
           />
           <span className="theme-toggle__pill">
             <Glyph />
-            <span className="sr-only">{label}</span>
+            <span className="theme-toggle__text">{label}</span>
           </span>
         </label>
       ))}

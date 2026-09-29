@@ -7,11 +7,14 @@ import SectionNav from './components/SectionNav'
 import ThemeToggle from './components/ThemeToggle'
 import ScrollProgress from './components/ScrollProgress'
 import BackToTop from './components/BackToTop'
+import Wordmark from './components/Wordmark'
 import { useReveal } from './hooks/useReveal'
+import { useScrolledPast } from './hooks/useScrolledPast'
 import { profile } from './data/profile'
 
 export default function App() {
   useReveal()
+  const scrolled = useScrolledPast()
 
   return (
     <>
@@ -19,7 +22,8 @@ export default function App() {
         跳到主要內容
       </a>
       <ScrollProgress />
-      <header className="topbar">
+      <header className="topbar" data-scrolled={scrolled || undefined}>
+        <Wordmark />
         <SectionNav />
         <ThemeToggle />
       </header>

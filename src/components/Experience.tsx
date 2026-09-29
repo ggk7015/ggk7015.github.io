@@ -4,11 +4,11 @@ import { stagger } from '../lib/motion'
 export default function Experience() {
   return (
     <section className="section" id="experience" aria-labelledby="experience-title">
-      <h2 className="section__title" id="experience-title">
+      <h2 className="section__title" id="experience-title" data-reveal="head">
         技術實作經驗
         <span className="badge badge--warn">非原創專案</span>
       </h2>
-      <p className="section__lead">
+      <p className="section__lead" data-reveal="head" style={stagger(1)}>
         下列為我在既有開源專案上的實作、部署與除錯經驗。專案本身
         <strong>非本人原創</strong>，此處僅列出我所接觸的部分，並標註上游來源。
       </p>

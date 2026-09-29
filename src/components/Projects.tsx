@@ -4,10 +4,10 @@ import { stagger } from '../lib/motion'
 export default function Projects() {
   return (
     <section className="section" id="work" aria-labelledby="work-title">
-      <h2 className="section__title" id="work-title">
+      <h2 className="section__title" id="work-title" data-reveal="head">
         原創作品
       </h2>
-      <p className="section__lead">
+      <p className="section__lead" data-reveal="head" style={stagger(1)}>
         以下專案皆為本人原始碼，已逐一以 Git 提交紀錄與遠端來源驗證。
       </p>
 
