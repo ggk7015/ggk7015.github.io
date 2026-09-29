@@ -7,8 +7,9 @@
   --text: #16181d;
   --text-muted: #5b6270;
   --border: #dfe3ea;
-  --accent: #2f6feb;
+  --accent: #2a63d4;
   --accent-contrast: #ffffff;
+  --stars: #9a6600;
   --warn-bg: #fff4e5;
   --warn-fg: #8a4b00;
   --warn-border: #f0b464;
@@ -39,6 +40,7 @@
     --border: #2a2f3a;
     --accent: #6ea8ff;
     --accent-contrast: #0b0e14;
+    --stars: #d99b1a;
     --warn-bg: #33240f;
     --warn-fg: #ffca7a;
     --warn-border: #7a5320;
@@ -214,7 +216,7 @@ a {
   padding: 0.25rem 0.2rem;
 }
 .hero__note-hint {
-  opacity: 0.75;
+  font-weight: 400;
 }
 
 .hero__qr {
@@ -366,7 +368,7 @@ a {
   letter-spacing: -0.01em;
 }
 .card__stars {
-  color: #c98a00;
+  color: var(--stars);
   font-size: var(--fs-sm);
   white-space: nowrap;
 }

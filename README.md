@@ -18,11 +18,15 @@ L2 中的第三方專案（RuView、Aoba-Client、DarkClient、PCL 等）**不�
 
 ```bash
 npm install
-npm run dev      # 本機開發
-npm run lint     # oxlint
-npm run build    # tsc -b && vite build -> dist/
-npm run preview  # 預覽正式建置結果
+npm run dev       # 本機開發
+npm run lint      # oxlint
+npm run typecheck # tsc -b --force（strict 模式）
+npm run build     # tsc -b && vite build -> dist/
+npm run preview   # 預覽正式建置結果
 ```
+
+TypeScript 以 `strict` 編譯，另開 `noImplicitOverride`、`noUncheckedSideEffectImports`、
+`noUnusedLocals`、`noUnusedParameters`；任何型別錯誤都會擋下 `build`。
 
 ## 部署
 
@@ -39,6 +43,17 @@ npm run preview  # 預覽正式建置結果
 
 `public/qr-print.svg` 是預先產生的**向量**印刷檔，編碼 `https://ggk7015.github.io/`，
 可直接交給印刷廠而不會失真。
+
+## 品質
+
+- **字型**：DM Sans（可變，自托管）與 Instrument Serif，置於 `public/fonts/`，
+  以 `src/fonts.css` 的 `@font-face` 載入，**不發出任何第三方請求**，離線亦可正確渲染。
+  字型家族僅 2 個，字級收斂為 1.25 模組化比例（`--fs-*`），正文行寬上限 `--measure: 40em`。
+- **配色對比**：`--accent`（淺色 `#2a63d4` / 深色 `#6ea8ff`）與 `--stars`
+  （淺色 `#9a6600` / 深色 `#d99b1a`）皆經 WCAG 2.1 AA 驗證，於 `--bg`、`--surface`
+  與深色表面上均達 4.5:1。兩色皆以 token 隨主題切換，勿寫死單一色碼。
+- **無障礙**：以 axe-core 於淺色／深色模式掃描皆為 0 違規，另涵蓋跳至主內容連結、
+  單一 `h1`、標題階層、里程碑地標、鍵盤焦點環、200% 文字縮放與列印樣式。
 
 ## 授權
 
