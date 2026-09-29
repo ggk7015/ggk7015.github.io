@@ -24,3 +24,8 @@ dist-ssr
 *.sw?
 
 .vercel
+
+# Screenshots and scratch files written by the local audit scripts
+*-check.svg
+*-check.png
+/shots/
