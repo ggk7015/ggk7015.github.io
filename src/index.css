@@ -427,6 +427,31 @@ a {
   transform: none;
 }
 
+/* ---------- Replayable entrance ----------
+   [data-replay] is the counterpart to [data-reveal]: rather than revealing once,
+   it toggles `.is-in` in both directions, so a framed element the reader passes
+   over repeatedly animates again every time it comes back into view. Driven by a
+   second observer in useReveal. */
+.js-motion [data-replay] {
+  opacity: 0;
+  transform: translateY(var(--reveal-d, var(--reveal-shift)));
+  transition: opacity var(--dur-4) var(--ease), transform var(--dur-4) var(--ease);
+  transition-delay: calc(var(--i, 0) * var(--stagger));
+  will-change: opacity, transform;
+}
+.js-motion [data-replay].is-in {
+  opacity: 1;
+  transform: translateY(0);
+  will-change: auto;
+}
+/* The entrance owns `transform` while it runs and out-specifies a plain
+   `.link-btn:hover`, so the hover lift has to be re-declared for the revealed
+   state. Scoping it to `.is-in` also keeps hover from cutting the entrance
+   animation short mid-flight. */
+.js-motion .link-btn[data-replay].is-in:hover {
+  transform: translateY(-2px);
+}
+
 .js-motion .hero__portraits,
 .js-motion .hero__name,
 .js-motion .hero__tagline,

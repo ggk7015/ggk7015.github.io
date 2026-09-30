@@ -59,34 +59,6 @@ TypeScript 以 `strict` 編譯，另開 `noImplicitOverride`、`noUncheckedSideE
 `public/qr-print.svg` 是預先產生的**向量**印刷檔，編碼 `https://ggk7015.github.io/`，
 可直接交給印刷廠而不會失真。
 
-## 品質
-
-- **字型**：DM Sans（可變，自托管）與 Instrument Serif，置於 `public/fonts/`，
-  以 `src/fonts.css` 的 `@font-face` 載入，**不發出任何第三方請求**，離線亦可正確渲染。
-  字型家族僅 2 個，字級收斂為 1.25 模組化比例（`--fs-*`），正文行寬上限 `--measure: 40em`。
-- **配色對比**：`--accent`（淺色 `#2a63d4` / 深色 `#6ea8ff`）與 `--stars`
-  （淺色 `#9a6600` / 深色 `#d99b1a`）皆經 WCAG 2.1 AA 驗證，於 `--bg`、`--surface`
-  與深色表面上均達 4.5:1。兩色皆以 token 隨主題切換，勿寫死單一色碼。
-- **無障礙**：以 axe-core 於淺色／深色模式掃描皆為 0 違規，另涵蓋跳至主內容連結、
-  單一 `h1`、標題階層、里程碑地標、鍵盤焦點環、200% 文字縮放與列印樣式。
-- **動效**：所有動畫皆為漸進增強，**不引入任何動畫函式庫**，僅用 CSS 與
-  `IntersectionObserver`。
-  - `<head>` 的 inline script 在繪製前決定兩件事：還原儲存的主題，以及在
-    `IntersectionObserver` 可用且未要求減少動態時加上 `js-motion` class。
-  - `[data-reveal]` 元素只有在 `js-motion` 存在時才會先隱藏，因此**沒有 JavaScript
-    或使用者要求減少動態時，內容一律直接可見**。
-  - `useReveal` 為保險起見另掛 scroll 監聽：按 End 鍵、跳至 `#hash` 或還原捲動位置
-    都可能一次越過整段內容，僅靠 `IntersectionObserver` 會讓被略過的元素停在
-    `opacity: 0`。
-  - inline script 另設 4 秒 fallback，React 若未掛載就移除 `js-motion`；`useReveal`
-    掛載後會取消該計時器。
-  - 統計數字採 count-up，遞增中的數字 `aria-hidden`，真實數值以 `.sr-only` 並列，
-    避免螢幕閱讀器逐格朗讀。
-  - 動效時長收斂為 `--dur-1..4`（120/200/320/480ms），曲線只用
-    `cubic-bezier(0.16, 1, 0.3, 1)` 與 `cubic-bezier(0.4, 0, 0.2, 1)`，不使用任何
-    回彈（bounce／elastic）曲線。`prefers-reduced-motion: reduce` 下停用整個動效引擎
-    且強制 `[data-reveal]` 可見。
-
 ## 互動
 
 | 元件 | 行為 |
@@ -98,6 +70,7 @@ TypeScript 以 `strict` 編譯，另開 `noImplicitOverride`、`noUncheckedSideE
 | 捲動進度 | 2px 定寬條，`transform: scaleX()` 由 rAF 節流更新，`aria-hidden` |
 | 回到頂端 | 捲動超過 600px 才渲染，44px 觸控目標，減少動態時改為瞬間跳轉 |
 | 卡片 | 進場 `data-reveal` 交錯（`--stagger`），`hover` 時統一上浮並加深陰影 |
+| 社群按鈕 | 進場 `data-replay`，滑出視窗重置、滑回來重演；目前僅 GitHub 套用 |
 
 錨點目標設有 `scroll-margin-top`，不會被 sticky 工具列遮住。
 
@@ -149,6 +122,33 @@ hover／selected 不改色，而是疊一層半透明遮罩，因此同一組 to
 3. **變化屬性** — 標題用短距離 beat（`--beat: 90ms`、`4px`）、
    次要內容只淡入不位移，只有主視覺真的位移。
 
+### 可重播進場
+
+一次性進場與可重播進場是**兩條獨立的通道**，因為目的不同：
+
+| 屬性 | 行為 | 用途 |
+| --- | --- | --- |
+| `[data-reveal]` | 加 `.is-in` 後**不再處理** | 讀者會反覆經過的內容不該重演 |
+| `[data-replay]` | `.is-in` **雙向**切換 | 有框的元件，滑回去要再演一次 |
+
+`useReveal` 因此掛兩個 `IntersectionObserver`：
+
+- `observeOnce()` 維護 `pending` 集合，只處理 `[data-reveal]`，並保留 scroll
+  保險掃描（End 鍵／`#hash` 跳轉會一次越過整段）。
+- `observeReplay()` 對 `[data-replay]` 直接 `classList.toggle('is-in', isIntersecting)`。
+  **刻意不接那個 scroll 掃描** —— 隱藏正是此處的預期行為，掃描會立刻抵銷它。
+
+兩個細節：
+
+- `rootMargin: 0px 0px -10% 0px` 是**遲滯帶**，元素要進到視窗 10% 才算 in-view，
+  因此捲動抖動停在邊界時不會讓框閃爍。
+- 入場動畫佔用 `transform`，而 `.js-motion [data-replay].is-in`（0,3,0）的優先序
+  會壓過 `.link-btn:hover`（0,2,0），**hover 上浮必須在 `.is-in` 狀態重新宣告**，
+  否則會無聲失效。限定在 `.is-in` 下也讓滑鼠停在框上時不會砍斷進行中的入場。
+
+目前只套用於 **GitHub 按鈕**；`Hero.tsx` 的 `replay={item.kind === 'github'}` 去掉
+條件即全開，`index` 已接好可直接產生 stagger。
+
 ### 平台偏好
 
 | 偏好 | 作法 | 支援度 |
@@ -176,11 +176,12 @@ hover／selected 不改色，而是疊一層半透明遮罩，因此同一組 to
   `IntersectionObserver`。
   - `<head>` 的 inline script 在繪製前決定兩件事：還原儲存的主題，以及在
     `IntersectionObserver` 可用且未要求減少動態時加上 `js-motion` class。
-  - `[data-reveal]` 元素只有在 `js-motion` 存在時才會先隱藏，因此**沒有 JavaScript
-    或使用者要求減少動態時，內容一律直接可見**。
+  - `[data-reveal]` 與 `[data-replay]` 元素只有在 `js-motion` 存在時才會先隱藏，
+    因此**沒有 JavaScript 或使用者要求減少動態時，內容一律直接可見**。
   - `useReveal` 為保險起見另掛 scroll 監聽：按 End 鍵、跳至 `#hash` 或還原捲動位置
     都可能一次越過整段內容，僅靠 `IntersectionObserver` 會讓被略過的元素停在
-    `opacity: 0`。
+    `opacity: 0`。該掃描**只作用於 `[data-reveal]`** —— `[data-replay]` 離開視窗
+    就重置是預期行為，掃描會立刻抵銷它。
   - inline script 另設 4 秒 fallback，React 若未掛載就移除 `js-motion`；`useReveal`
     掛載後會取消該計時器。
   - 統計數字採 count-up，遞增中的數字 `aria-hidden`，真實數值以 `.sr-only` 並列，
@@ -188,12 +189,12 @@ hover／selected 不改色，而是疊一層半透明遮罩，因此同一組 to
   - 動效時長收斂為 `--dur-1..4`（120/200/320/480ms），曲線只用
     `cubic-bezier(0.16, 1, 0.3, 1)` 與 `cubic-bezier(0.4, 0, 0.2, 1)`，不使用任何
     回彈（bounce／elastic）曲線。`prefers-reduced-motion: reduce` 下停用整個動效引擎
-    且強制 `[data-reveal]` 可見。
+    且強制兩種進場屬性皆可見。
 
 ### 自動化稽核
 
-五套 Playwright 稽核（使用本機 Brave 執行檔）涵蓋版面、字體、動效、深淺主題與
-平台偏好，目前 **185 項全數通過**：
+七套 Playwright 稽核（使用本機 Brave 執行檔）涵蓋版面、字體、動效、深淺主題、
+平台偏好與可重播進場，目前 **204 項全數通過**：
 
 | 稽核 | 項數 | 涵蓋 |
 | --- | --- | --- |
@@ -202,7 +203,11 @@ hover／selected 不改色，而是疊一層半透明遮罩，因此同一組 to
 | `type-audit.mjs` | 14 | 字型載入、字級模組、截斷 |
 | `motion-audit.mjs` | 28 | reveal 引擎、count-up、scroll-spy、主題持久化 |
 | `chrome-audit.mjs` | 52 | topbar 收合、觸控目標、遮擋、responsive 標籤 |
-| `platform-audit.mjs` | 21 | 五種平台偏好、200%、無 JS |
+| `platform-audit.mjs` | 23 | 五種平台偏好、200%、無 JS |
+| `replay-audit.mjs` | 17 | 進場重播、來回捲動、hover 疊加、遲滯不閃爍 |
+
+`replay-audit.mjs` 的重點是「可重播」這件事**無法靠讀原始碼證明**，必須真的捲動並
+取樣 computed style。它連續往返兩次以上，因為單次通過無法排除「碰巧還活著」。
 
 稽核腳本目前存於 `%LOCALAPPDATA%\Temp\opencode\siteverify\`，**尚未納入版控**。
 其中數項斷言刻意避開以下陷阱（皆有實測紀錄，詳見 SKILL
@@ -215,9 +220,11 @@ hover／selected 不改色，而是疊一層半透明遮罩，因此同一組 to
 - `rgb()` 沒有 alpha 插槽，須先判斷元數量再取第 4 個值。
 - `display: none` 量測得 `0×0` 而非 `null`，響應式斷言須區分「隱藏」與「不存在」。
 - `aria-current` 在未捲動到任何區段時不存在，量測前必須先捲動。
-- `rgb()` 沒有 alpha 插槽，須先判斷元數量再取第 4 個值。
+- 動效狀態需等 transition 結束再取樣，否則會讀到中間值。
 - axe 會把**計算後的 opacity** 算進對比檢查，因此在淡入尚未結束時取樣會誤報
   `color-contrast`。稽核前必須先讓所有 reveal 收斂，並連跑兩次確認不是競態。
+- 元素一旦離開視窗就會重置，`is-in` 存在與否必須搭配當下的捲動位置判讀，
+  不能單看 class 就斷言「已顯示」。
 - 無 JS 時 `<div id="root">` 本來就是空的（純 SPA）；斷言必須排除 `script`／`style`
   的文字，否則會把 inline script 的原始碼算成「頁面內容」而假通過。已補上
   `<noscript>` 區塊提供純文字版本，並直接斷言其存在。

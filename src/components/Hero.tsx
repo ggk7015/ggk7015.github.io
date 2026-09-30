@@ -1,12 +1,15 @@
 import { useState } from 'react'
 import { links, profile, type LinkItem } from '../data/profile'
+import { stagger } from '../lib/motion'
 import { Icon } from './Icon'
 import QRCode from './QRCode'
 
-function LinkButton({ item }: { item: LinkItem }) {
+function LinkButton({ item, index, replay }: { item: LinkItem; index: number; replay: boolean }) {
   return (
     <a
       className={`link-btn link-btn--${item.kind}`}
+      data-replay={replay ? '' : undefined}
+      style={replay ? stagger(index) : undefined}
       href={item.href}
       target="_blank"
       rel="noopener noreferrer me"
@@ -51,8 +54,8 @@ export default function Hero() {
       ))}
 
       <nav className="hero__links" aria-label="社群連結">
-        {links.map((item) => (
-          <LinkButton key={item.kind} item={item} />
+        {links.map((item, index) => (
+          <LinkButton key={item.kind} item={item} index={index} replay={item.kind === 'github'} />
         ))}
       </nav>
 
