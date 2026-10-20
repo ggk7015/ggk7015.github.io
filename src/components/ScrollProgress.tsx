@@ -1,8 +1,11 @@
 import { useEffect, useRef } from 'react'
 
-/** Decorative reading-progress bar. `aria-hidden`; no focus target, no text. */
+/**
+ * Reading progress as a hairline under the top bar. Written straight to the
+ * node's transform so scrolling never re-renders React.
+ */
 export default function ScrollProgress() {
-  const barRef = useRef<HTMLDivElement>(null)
+  const barRef = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
     const bar = barRef.current
@@ -31,5 +34,5 @@ export default function ScrollProgress() {
     }
   }, [])
 
-  return <div ref={barRef} className="scroll-progress" aria-hidden="true" />
+  return <span ref={barRef} className="progress__bar" aria-hidden="true" />
 }

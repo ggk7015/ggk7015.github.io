@@ -1,47 +1,53 @@
+import Capabilities from './components/Capabilities'
+import Galaxy from './components/Galaxy'
 import Hero from './components/Hero'
-import Stats from './components/Stats'
-import Projects from './components/Projects'
-import Experience from './components/Experience'
-import Skills from './components/Skills'
-import SectionNav from './components/SectionNav'
-import ThemeToggle from './components/ThemeToggle'
-import ScrollProgress from './components/ScrollProgress'
-import BackToTop from './components/BackToTop'
-import Wordmark from './components/Wordmark'
-import { useReveal } from './hooks/useReveal'
-import { useScrolledPast } from './hooks/useScrolledPast'
+import Signal from './components/Signal'
+import SiteHeader from './components/SiteHeader'
+import Trajectory from './components/Trajectory'
+import Work from './components/Work'
 import { profile } from './data/profile'
+import { useReveal } from './hooks/useReveal'
+
+const YEAR = new Date().getFullYear()
 
 export default function App() {
   useReveal()
-  const scrolled = useScrolledPast()
 
   return (
     <>
       <a className="skip-link" href="#work">
         跳到主要內容
       </a>
-      <ScrollProgress />
-      <header className="topbar" data-scrolled={scrolled || undefined}>
-        <Wordmark />
-        <SectionNav />
-        <ThemeToggle />
-      </header>
-      <main className="page">
+
+      <Galaxy />
+      <div className="veil" aria-hidden="true" />
+
+      <SiteHeader />
+
+      <main id="main" className="page">
         <Hero />
-        <Stats />
-        <Projects />
-        <Experience />
-        <Skills />
+        <Work />
+        <Trajectory />
+        <Capabilities />
+        <Signal />
       </main>
+
       <footer className="footer">
-        <p>
-          {profile.name} ・ 建置於 Vite + React ・{' '}
-          <a href="https://github.com/ggk7015/ggk7015.github.io" target="_blank" rel="noopener noreferrer">
-            原始碼
-          </a>
-        </p>
-        <BackToTop />
+        <div className="footer__inner">
+          <p>
+            © {YEAR} {profile.name} ・ 建置於 Vite + React + Canvas 2D
+          </p>
+          <div className="footer__links">
+            <a
+              href="https://github.com/ggk7015/ggk7015.github.io"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              原始碼
+            </a>
+            <a href="#top">回到頂端 ↑</a>
+          </div>
+        </div>
       </footer>
     </>
   )
