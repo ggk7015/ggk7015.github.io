@@ -1,22 +1,27 @@
+import type { MouseEvent } from 'react'
 import { links } from '../data/profile'
 import { useActiveSection } from '../hooks/useActiveSection'
 import { useScrolledPast } from '../hooks/useScrolledPast'
+import { SECTIONS, SECTION_IDS, type SectionLink } from '../lib/sections'
 import ScrollProgress from './ScrollProgress'
 import ThemeToggle from './ThemeToggle'
 
-const NAV = [
-  { id: 'work', label: '作品' },
-  { id: 'trajectory', label: '經歷' },
-  { id: 'capabilities', label: '能力' },
-  { id: 'signal', label: '聯絡' },
-] as const
+type Props = {
+  onNavigate: (id: string, label: string) => void
+}
 
-const NAV_IDS = NAV.map((item) => item.id)
-
-export default function SiteHeader() {
+export default function SiteHeader({ onNavigate }: Props) {
   const scrolled = useScrolledPast()
-  const active = useActiveSection(NAV_IDS)
+  const active = useActiveSection(SECTION_IDS)
   const github = links[0]
+
+  function handleClick(event: MouseEvent<HTMLAnchorElement>, section: SectionLink) {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return
+    }
+    event.preventDefault()
+    onNavigate(section.id, section.label)
+  }
 
   return (
     <header className="topbar" data-scrolled={scrolled || undefined}>
@@ -57,17 +62,18 @@ export default function SiteHeader() {
           <span className="brand__text">ggk5743</span>
         </a>
 
-        <nav className="nav" aria-label="主要導覽">
-          {NAV.map((item) => (
+        <nav className="constellation" aria-label="主要導覽">
+          {SECTIONS.map((section) => (
             <a
-              key={item.id}
-              className="nav__link"
-              href={`#${item.id}`}
-              data-active={active === item.id || undefined}
-              aria-current={active === item.id ? 'location' : undefined}
+              key={section.id}
+              className="constellation__node"
+              href={`#${section.id}`}
+              data-active={active === section.id || undefined}
+              aria-current={active === section.id ? 'location' : undefined}
+              onClick={(event) => handleClick(event, section)}
             >
-              <span className="nav__dot" aria-hidden="true" />
-              {item.label}
+              <span className="constellation__dot" aria-hidden="true" />
+              <span className="constellation__label">{section.label}</span>
             </a>
           ))}
         </nav>

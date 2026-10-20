@@ -354,54 +354,75 @@ pre {
   letter-spacing: 0.01em;
 }
 
-.nav {
+/* Constellation nav: four stars on a hairline, the active one lit. -------- */
+
+.constellation {
+  position: relative;
   display: flex;
-  gap: 2px;
-  padding: 3px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--panel);
+  align-items: flex-start;
+  gap: 22px;
+  padding: 0 6px;
 }
 
-.nav__link {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 14px;
-  border-radius: 6px;
+.constellation::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 5px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--line-strong) 14%,
+    var(--line-strong) 86%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+.constellation__node {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 1px 6px 0;
   color: var(--ink-3);
-  font-size: 0.82rem;
+  font-size: 0.73rem;
+  letter-spacing: 0.03em;
   text-decoration: none;
-  transition:
-    color 0.25s var(--ease),
-    background-color 0.25s var(--ease);
+  transition: color 0.25s var(--ease);
 }
 
-.nav__link:hover {
-  color: var(--ink);
-  background: var(--chip);
-}
-
-.nav__link[data-active] {
-  color: var(--ink);
-  background: var(--panel-raise);
-}
-
-.nav__dot {
-  width: 5px;
-  height: 5px;
+.constellation__dot {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: var(--accent);
-  opacity: 0;
-  transform: scale(0.4);
+  background: currentColor;
   transition:
-    opacity 0.3s var(--ease),
-    transform 0.3s var(--ease);
+    transform 0.3s var(--ease-out),
+    background-color 0.3s var(--ease),
+    box-shadow 0.3s var(--ease);
 }
 
-.nav__link[data-active] .nav__dot {
-  opacity: 1;
-  transform: none;
+.constellation__node:hover {
+  color: var(--ink);
+}
+
+.constellation__node:hover .constellation__dot {
+  background: var(--accent);
+  transform: scale(1.35);
+}
+
+.constellation__node[data-active] {
+  color: var(--ink);
+}
+
+.constellation__node[data-active] .constellation__dot {
+  background: var(--accent);
+  box-shadow:
+    0 0 0 4px var(--accent-soft),
+    0 0 12px var(--accent);
 }
 
 .topbar__actions {
@@ -678,107 +699,6 @@ pre {
   letter-spacing: 0.01em;
 }
 
-/* Orb ---------------------------------------------------------------- */
-
-.orb {
-  position: relative;
-  display: grid;
-  place-items: center;
-  justify-self: end;
-  width: clamp(230px, 26vw, 330px);
-  aspect-ratio: 1;
-  margin: 0;
-}
-
-.orb__halo {
-  position: absolute;
-  inset: -26%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 45%, var(--accent-soft), transparent 62%);
-  filter: blur(4px);
-}
-
-.orb__ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid var(--line);
-  pointer-events: none;
-}
-
-.orb__ring--a {
-  inset: -9%;
-  border-style: dashed;
-  border-color: var(--line-strong);
-  opacity: 0.55;
-  animation: spin 64s linear infinite;
-}
-
-.orb__ring--a::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: -3.5px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 14px var(--accent);
-}
-
-.orb__ring--b {
-  inset: -22%;
-  opacity: 0.6;
-  animation: spin 104s linear infinite reverse;
-}
-
-.orb__ring--c {
-  inset: 12%;
-  border-color: var(--accent-soft);
-}
-
-.orb__avatar {
-  width: 76%;
-  height: 76%;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid var(--line-strong);
-  box-shadow: 0 40px 90px -40px rgb(0 0 0 / 85%);
-  filter: saturate(1.02);
-}
-
-.orb__skin {
-  position: absolute;
-  right: 4%;
-  bottom: 8%;
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
-  object-fit: cover;
-  border: 1px solid var(--line-strong);
-  background: var(--panel-solid);
-  box-shadow: 0 12px 28px -14px rgb(0 0 0 / 80%);
-  animation: bob 7s var(--ease) infinite;
-}
-
-.orb__caption {
-  position: absolute;
-  bottom: -34px;
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  font-size: 0.7rem;
-  color: var(--ink-3);
-}
-
-.orb__label {
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-
-.orb__caption code {
-  color: var(--ink-2);
-  font-size: 0.72rem;
-}
 
 .hero__cue {
   display: inline-flex;
@@ -811,6 +731,61 @@ pre {
 .section__head {
   max-width: 660px;
   margin-bottom: clamp(36px, 5vw, 58px);
+}
+
+/* Return trip: one per section, always leading back to the last planet. -- */
+
+.backstar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: clamp(26px, 3.4vw, 40px);
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--ink-3);
+  font-family: inherit;
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    color 0.25s var(--ease),
+    border-color 0.25s var(--ease),
+    background-color 0.25s var(--ease),
+    transform 0.3s var(--ease-out);
+}
+
+.backstar__arrow {
+  color: var(--accent);
+  transition: transform 0.3s var(--ease-out);
+}
+
+.backstar em {
+  font-style: normal;
+  color: var(--ink-2);
+}
+
+.backstar em::before {
+  content: '· ';
+  color: var(--ink-3);
+}
+
+.backstar:hover,
+.backstar:focus-visible {
+  border-color: var(--line-strong);
+  background: var(--chip);
+  color: var(--ink);
+}
+
+.backstar:hover .backstar__arrow {
+  transform: translateX(-3px);
+}
+
+.backstar:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .section__title {
@@ -1440,6 +1415,331 @@ html.js-motion [data-reveal].is-in {
   }
 }
 
+/* Star map: the four sections orbit the core. ------------------------- */
+
+.starmap {
+  position: relative;
+  justify-self: end;
+  -webkit-tap-highlight-color: transparent;
+  /* rem-based so browser zoom scales the whole chart with the type. */
+  width: clamp(18rem, 30vw, 26rem);
+  aspect-ratio: 1;
+  /* Room for the hint that sits just under the chart. */
+  margin: 0 0 2.2rem;
+  touch-action: pan-y pinch-zoom;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.starmap[data-dragging] {
+  cursor: grabbing;
+}
+
+.starmap__hint {
+  position: absolute;
+  left: 50%;
+  bottom: -1.85rem;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 0.56rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-3);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.starmap__field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.starmap__ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+}
+
+.starmap__ring--outer {
+  inset: -3%;
+  border-style: dashed;
+  border-color: var(--line-strong);
+  opacity: 0.42;
+  animation: spin 160s linear infinite;
+}
+
+.starmap__ring--outer::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -3.5px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 14px var(--accent);
+  opacity: 0.9;
+}
+
+.starmap__ring--mid {
+  inset: 12%;
+  border-color: var(--line-strong);
+  opacity: 0.8;
+}
+
+.starmap__ring--inner {
+  inset: 27%;
+  border-style: dashed;
+  opacity: 0.6;
+}
+
+.starmap__tick {
+  position: absolute;
+  left: 50%;
+  width: 1px;
+  height: 11px;
+  background: var(--accent);
+  opacity: 0.45;
+}
+
+.starmap__tick--a {
+  top: -6px;
+}
+
+.starmap__tick--b {
+  bottom: -6px;
+}
+
+.starmap__core {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.starmap__halo {
+  position: absolute;
+  width: 58%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 46%, var(--accent-soft), transparent 66%);
+  filter: blur(6px);
+}
+
+.starmap__avatar {
+  position: relative;
+  width: 40%;
+  /* Height must be stated: the width/height attributes on the <img> otherwise
+     pin the height and the circle stretches into an ellipse. */
+  height: 40%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 34px 80px -44px rgb(0 0 0 / 90%);
+}
+
+.starmap__core-label {
+  position: absolute;
+  bottom: 21%;
+  font-size: 0.56rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.starmap__sats {
+  position: absolute;
+  inset: 0;
+  /* Driven from JS (idle drift + drag) so the same angle can also cancel out
+     inside each satellite and keep the labels upright. */
+  transform: rotate(var(--orbit, 0deg));
+  will-change: transform;
+}
+
+.sat {
+  position: absolute;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-3);
+  text-decoration: none;
+  cursor: pointer;
+  transform: translate(-50%, -3px);
+}
+
+.sat__inner {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  /* Cancels the orbit rotation on the parent so the labels never tilt. */
+  transform: rotate(calc(var(--orbit, 0deg) * -1));
+}
+
+.sat__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  transition:
+    transform 0.3s var(--ease-out),
+    background-color 0.3s var(--ease),
+    box-shadow 0.3s var(--ease);
+}
+
+.sat__label {
+  padding: 3px 8px;
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--void) 62%, transparent);
+  color: var(--ink-2);
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  transition:
+    color 0.3s var(--ease),
+    background-color 0.3s var(--ease);
+}
+
+.sat__code {
+  font-family: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', monospace;
+  font-size: 0.54rem;
+  letter-spacing: 0.16em;
+  color: var(--ink-3);
+  opacity: 0.72;
+  transition: color 0.3s var(--ease);
+}
+
+.sat:hover .sat__dot,
+.sat:focus-visible .sat__dot,
+.sat[data-active] .sat__dot {
+  background: var(--accent);
+  box-shadow:
+    0 0 0 5px var(--accent-soft),
+    0 0 16px var(--accent);
+}
+
+.sat:hover .sat__label,
+.sat:focus-visible .sat__label,
+.sat[data-active] .sat__label {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--void) 82%, transparent);
+}
+
+.sat:hover .sat__code,
+.sat[data-active] .sat__code {
+  color: var(--accent);
+}
+
+.sat__label::after {
+  content: '';
+  display: block;
+  height: 1px;
+  margin-top: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform 0.35s var(--ease-out);
+}
+
+.sat[data-active] .sat__label::after,
+.sat:hover .sat__label::after {
+  transform: scaleX(1);
+}
+
+.sat:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+  border-radius: var(--r-sm);
+}
+
+/* Warp overlay: the jump between stars. ------------------------------- */
+
+.warp {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  background: var(--void);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.24s var(--ease);
+  color: var(--star);
+}
+
+.warp[data-active] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.warp__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.warp__hud {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(44px, 11vh, 92px);
+  transform: translateX(-50%);
+  display: grid;
+  gap: 9px;
+  justify-items: center;
+  width: min(400px, calc(100% - 48px));
+  text-align: center;
+}
+
+.warp__dest {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 0.66rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.warp__dest strong {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--ink);
+}
+
+.warp__meter {
+  width: 100%;
+  height: 2px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--ink) 16%, transparent);
+}
+
+.warp__meter-fill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--star));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.warp__readout {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-family: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
 /* ==========================================================================
    Responsive
    ========================================================================== */
@@ -1450,12 +1750,8 @@ html.js-motion [data-reveal].is-in {
     gap: 32px;
   }
 
-  .orb {
-    width: clamp(200px, 24vw, 260px);
-  }
-
-  .orb__caption {
-    display: none;
+  .starmap {
+    width: clamp(14rem, 26vw, 19rem);
   }
 
   .card--feature .card__list {
@@ -1464,7 +1760,7 @@ html.js-motion [data-reveal].is-in {
 }
 
 @media (max-width: 900px) {
-  .nav {
+  .constellation {
     display: none;
   }
 
@@ -1485,16 +1781,14 @@ html.js-motion [data-reveal].is-in {
     gap: 48px;
   }
 
-  .orb {
-    /* Centred so the outer orbit ring never bleeds off a narrow screen. */
+  .starmap {
     justify-self: center;
-    width: clamp(180px, 46vw, 240px);
+    width: min(84vw, 20rem);
   }
 
   .hero__cue {
     display: none;
   }
-
   .work,
   .signal {
     grid-template-columns: 1fr;
@@ -1577,13 +1871,17 @@ html.js-motion [data-reveal].is-in {
   .skill,
   .signal,
   .link-row,
-  .nav,
-  .theme-toggle {
+  .theme-toggle,
+  .sat__label {
     border: 1px solid CanvasText;
   }
 
   .hl,
   .card__stars {
     color: CanvasText;
+  }
+
+  .warp {
+    display: none;
   }
 }

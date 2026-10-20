@@ -1,8 +1,22 @@
+import type { MouseEvent } from 'react'
 import { profile, stats } from '../data/profile'
 import { stagger } from '../lib/motion'
+import StarMap from './StarMap'
 
-export default function Hero() {
+type Props = {
+  onNavigate: (id: string, label: string) => void
+}
+
+export default function Hero({ onNavigate }: Props) {
   const since = profile.joined.slice(0, 4)
+
+  function jump(event: MouseEvent<HTMLAnchorElement>, id: string, label: string) {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return
+    }
+    event.preventDefault()
+    onNavigate(id, label)
+  }
 
   return (
     <section id="top" className="hero" aria-labelledby="hero-title">
@@ -29,7 +43,11 @@ export default function Hero() {
           </p>
 
           <div className="hero__actions" data-reveal style={stagger(4)}>
-            <a className="btn btn--primary" href="#work">
+            <a
+              className="btn btn--primary"
+              href="#work"
+              onClick={(event) => jump(event, 'work', '作品')}
+            >
               查看作品
               <span className="btn__glyph" aria-hidden="true">
                 ↓
@@ -62,37 +80,10 @@ export default function Hero() {
           </dl>
         </div>
 
-        <figure className="orb" data-reveal style={stagger(2)}>
-          <div className="orb__halo" aria-hidden="true" />
-          <div className="orb__ring orb__ring--a" aria-hidden="true" />
-          <div className="orb__ring orb__ring--b" aria-hidden="true" />
-          <div className="orb__ring orb__ring--c" aria-hidden="true" />
-          <img
-            className="orb__avatar"
-            src={profile.avatar}
-            alt={`${profile.name} 的頭像`}
-            width={320}
-            height={320}
-            decoding="async"
-          />
-          <img
-            className="orb__skin"
-            src={profile.skin}
-            alt=""
-            aria-hidden="true"
-            width={56}
-            height={56}
-            loading="lazy"
-            decoding="async"
-          />
-          <figcaption className="orb__caption">
-            <span className="orb__label">NODE</span>
-            <code>ggk7015</code>
-          </figcaption>
-        </figure>
+        <StarMap onNavigate={onNavigate} />
       </div>
 
-      <a className="hero__cue" href="#work">
+      <a className="hero__cue" href="#work" onClick={(event) => jump(event, 'work', '作品')}>
         <span>向下捲動</span>
         <svg
           viewBox="0 0 24 24"

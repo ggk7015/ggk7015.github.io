@@ -9,19 +9,22 @@
       content="ggk5743 的個人網站：Minecraft 生態、Next.js 後台、Tauri 桌面應用與基礎設施的實作紀錄。附社群連結與 QR 碼。"
     />
     <meta name="author" content="ggk5743" />
-    <meta name="theme-color" content="#f2f4fa" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#05070d" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#efe8d8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b1418" media="(prefers-color-scheme: dark)" />
 
     <script>
       // Pre-paint, so neither the stored theme nor the reduced-motion gate can flash.
+      // Dark is the default; the OS value only applies once "自動" is picked.
       (function () {
         try {
           var stored = localStorage.getItem('theme')
-          if (stored === 'light' || stored === 'dark') {
-            document.documentElement.setAttribute('data-theme', stored)
+          if (stored === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light')
+          } else if (stored !== 'system') {
+            document.documentElement.setAttribute('data-theme', 'dark')
           }
         } catch (e) {
-          // Storage blocked: fall through to the OS preference.
+          document.documentElement.setAttribute('data-theme', 'dark')
         }
         var motion =
           'IntersectionObserver' in window &&

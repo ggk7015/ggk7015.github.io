@@ -4,14 +4,17 @@ import Hero from './components/Hero'
 import Signal from './components/Signal'
 import SiteHeader from './components/SiteHeader'
 import Trajectory from './components/Trajectory'
+import Warp from './components/Warp'
 import Work from './components/Work'
 import { profile } from './data/profile'
 import { useReveal } from './hooks/useReveal'
+import { useSectionNav } from './hooks/useSectionNav'
 
 const YEAR = new Date().getFullYear()
 
 export default function App() {
   useReveal()
+  const { go, back, arrive, target, backLabel } = useSectionNav()
 
   return (
     <>
@@ -22,14 +25,14 @@ export default function App() {
       <Galaxy />
       <div className="veil" aria-hidden="true" />
 
-      <SiteHeader />
+      <SiteHeader onNavigate={go} />
 
       <main id="main" className="page">
-        <Hero />
-        <Work />
-        <Trajectory />
-        <Capabilities />
-        <Signal />
+        <Hero onNavigate={go} />
+        <Work onBack={back} backLabel={backLabel} />
+        <Trajectory onBack={back} backLabel={backLabel} />
+        <Capabilities onBack={back} backLabel={backLabel} />
+        <Signal onBack={back} backLabel={backLabel} />
       </main>
 
       <footer className="footer">
@@ -49,6 +52,8 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      <Warp target={target} onArrive={arrive} />
     </>
   )
 }

@@ -1,9 +1,17 @@
-﻿import { skills } from '../data/profile'
+import { skills } from '../data/profile'
 import { stagger } from '../lib/motion'
+import BackToStar from './BackToStar'
 
-export default function Capabilities() {
+type Props = {
+  onBack: () => void
+  backLabel: string
+}
+
+export default function Capabilities({ onBack, backLabel }: Props) {
   return (
     <section id="capabilities" className="section" aria-labelledby="capabilities-title">
+      <BackToStar label={backLabel} onClick={onBack} />
+
       <header className="section__head" data-reveal>
         <p className="eyebrow">03 — CAPABILITIES</p>
         <h2 id="capabilities-title" className="section__title">

@@ -1,9 +1,17 @@
-﻿import { experiences } from '../data/profile'
+import { experiences } from '../data/profile'
 import { stagger } from '../lib/motion'
+import BackToStar from './BackToStar'
 
-export default function Trajectory() {
+type Props = {
+  onBack: () => void
+  backLabel: string
+}
+
+export default function Trajectory({ onBack, backLabel }: Props) {
   return (
     <section id="trajectory" className="section" aria-labelledby="trajectory-title">
+      <BackToStar label={backLabel} onClick={onBack} />
+
       <header className="section__head" data-reveal>
         <p className="eyebrow">02 — TRAJECTORY</p>
         <h2 id="trajectory-title" className="section__title">

@@ -1,14 +1,23 @@
-﻿import { links } from '../data/profile'
+import { links } from '../data/profile'
 import { stagger } from '../lib/motion'
+import BackToStar from './BackToStar'
 import { Icon } from './Icon'
 import QRCode from './QRCode'
 
 const SITE = 'https://ggk7015.github.io/'
 
-export default function Signal() {
+type Props = {
+  onBack: () => void
+  backLabel: string
+}
+
+export default function Signal({ onBack, backLabel }: Props) {
   return (
     <section id="signal" className="section section--signal" aria-labelledby="signal-title">
+      <BackToStar label={backLabel} onClick={onBack} />
+
       <div className="signal">
+
         <div className="signal__copy" data-reveal>
           <p className="eyebrow">04 — SIGNAL</p>
           <h2 id="signal-title" className="section__title">

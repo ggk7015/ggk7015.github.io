@@ -1,9 +1,17 @@
-﻿import { projects } from '../data/profile'
+import { projects } from '../data/profile'
 import { stagger } from '../lib/motion'
+import BackToStar from './BackToStar'
 
-export default function Work() {
+type Props = {
+  onBack: () => void
+  backLabel: string
+}
+
+export default function Work({ onBack, backLabel }: Props) {
   return (
     <section id="work" className="section" aria-labelledby="work-title">
+      <BackToStar label={backLabel} onClick={onBack} />
+
       <header className="section__head" data-reveal>
         <p className="eyebrow">01 — SELECTED WORK</p>
         <h2 id="work-title" className="section__title">
