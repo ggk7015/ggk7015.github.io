@@ -41,15 +41,6 @@ TypeScript 以 `strict` 編譯，另開 `noImplicitOverride`、`noUncheckedSideE
 設定 `max-age=31536000, immutable`，其餘靜態資源為 7 天。HTML 本身**不**使用
 `immutable`，否則使用者會被永久釘在舊版本上。
 
-> **Vercel 自動部署尚未啟用。** Vercel GitHub App 尚未取得 `ggk7015/ggk7015.github.io`
-> 的存取權，因此 `vercel git connect` 會失敗。要讓每次 push 自動部署，需在
-> Vercel 後台「Settings → Git → Connect GitHub Repository」授權該 repo。
-> 在授權之前，Vercel 端以 CLI 發布：
->
-> ```bash
-> npx vercel --prod
-> ```
-
 ## QR 碼
 
 頁面內的 QR 碼由 `qr-creator` 產生，編碼當前網域的 origin，因此同一份程式碼
