@@ -18,7 +18,7 @@ export default function Work({ onBack, backLabel }: Props) {
           在軌道上<em className="hl">的作品</em>
         </h2>
         <p className="section__note">
-          五個公開專案。重點不在功能清單，而在取捨：哪些依賴該砍、哪些抽象該留、哪些協定值得自己實作。
+          從網站、Minecraft 到部署工具。每個專案都是一次把想法做成實際體驗的嘗試。
         </p>
       </header>
 
@@ -30,6 +30,10 @@ export default function Work({ onBack, backLabel }: Props) {
             data-reveal
             style={stagger(index)}
           >
+            <div className="card__overline" aria-hidden="true">
+              <span>{index === 0 ? 'FEATURED PROJECT' : 'SELECTED PROJECT'}</span>
+              <span>✳</span>
+            </div>
             <div className="card__top">
               <span className="card__index">{String(index + 1).padStart(2, '0')}</span>
               <h3 className="card__name">{project.name}</h3>

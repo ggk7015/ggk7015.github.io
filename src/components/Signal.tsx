@@ -24,7 +24,7 @@ export default function Signal({ onBack, backLabel }: Props) {
             建立<em className="hl">連線</em>
           </h2>
           <p className="section__note">
-            有想一起做的東西、想修的系統，或只是想問一個問題，從任何一個節點都能找到我。回覆通常在一天內。
+            有想一起做的東西、想修的系統，或只是想問一個問題，歡迎透過以下平台與我聯繫。回覆通常在一天內。
           </p>
 
           <ul className="links">

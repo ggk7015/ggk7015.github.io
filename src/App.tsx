@@ -37,9 +37,7 @@ export default function App() {
 
       <footer className="footer">
         <div className="footer__inner">
-          <p>
-            © {YEAR} {profile.name} ・ 建置於 Vite + React + Canvas 2D
-          </p>
+          <p>© {YEAR} {profile.name} <span aria-hidden="true">・</span> Made with curiosity.</p>
           <div className="footer__links">
             <a
               href="https://github.com/ggk7015/ggk7015.github.io"

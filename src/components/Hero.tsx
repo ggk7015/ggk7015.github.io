@@ -42,7 +42,12 @@ export default function Hero({ onNavigate }: Props) {
             {profile.bio[1]}
           </p>
 
-          <div className="hero__actions" data-reveal style={stagger(4)}>
+          <div className="hero__signature" data-reveal style={stagger(4)}>
+            <span aria-hidden="true">✳</span>
+            <span>DESIGN WITH INTENT <i aria-hidden="true">/</i> BUILD WITH CARE</span>
+          </div>
+
+          <div className="hero__actions" data-reveal style={stagger(5)}>
             <a
               className="btn btn--primary"
               href="#work"
@@ -66,7 +71,7 @@ export default function Hero({ onNavigate }: Props) {
             </a>
           </div>
 
-          <dl className="hero__stats" data-reveal style={stagger(5)}>
+          <dl className="hero__stats" data-reveal style={stagger(6)}>
             {stats.map((item) => (
               <div className="stat" key={item.label}>
                 <dt>{item.label}</dt>

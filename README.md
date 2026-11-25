@@ -20,6 +20,7 @@ npm install
 npm run dev       # 本機開發
 npm run lint      # oxlint
 npm run typecheck # tsc -b --force（strict 模式）
+npm test          # 無 JS 備援連結及響應式規則檢查
 npm run build     # tsc -b && vite build -> dist/
 npm run preview   # 預覽正式建置結果
 ```
@@ -154,14 +155,15 @@ hover／selected 不改色，而是疊一層半透明遮罩，因此同一組 to
 
 ## 品質
 
+2026-11 視覺調整後，以 Ego Lite／Chromium 模擬 320、390、768、900、1024、
+1440px 寬度檢查版面，並檢查主題切換、手機導覽及減少動態偏好；這些模擬結果不代表
+已完成所有實機或瀏覽器的無障礙驗收。`npm test` 的兩項靜態測試已納入部署工作流程。
+
 - **字型**：DM Sans（可變，自托管）與 Instrument Serif，置於 `public/fonts/`，
   以 `src/fonts.css` 的 `@font-face` 載入，**不發出任何第三方請求**，離線亦可正確渲染。
   字型家族僅 2 個，字級收斂為 1.25 模組化比例（`--fs-*`），正文行寬上限 `--measure: 40em`。
-- **配色對比**：`--accent`（淺色 `#2a63d4` / 深色 `#6ea8ff`）與 `--stars`
-  （淺色 `#9a6600` / 深色 `#d99b1a`）皆經 WCAG 2.1 AA 驗證，於 `--bg`、`--surface`
-  與深色表面上均達 4.5:1。兩色皆以 token 隨主題切換，勿寫死單一色碼。
-- **無障礙**：以 axe-core 於淺色／深色模式掃描皆為 0 違規，另涵蓋跳至主內容連結、
-  單一 `h1`、標題階層、里程碑地標、鍵盤焦點環、200% 文字縮放與列印樣式。
+- **配色與無障礙**：沿用語意色彩 token、可見鍵盤焦點與深淺主題；調整後的完整
+  WCAG 對比、螢幕閱讀器與實機無障礙驗收尚待獨立測試。
 - **動效**：所有動畫皆為漸進增強，**不引入任何動畫函式庫**，僅用 CSS 與
   `IntersectionObserver`。
   - `<head>` 的 inline script 在繪製前決定兩件事：還原儲存的主題，以及在
@@ -174,17 +176,11 @@ hover／selected 不改色，而是疊一層半透明遮罩，因此同一組 to
     就重置是預期行為，掃描會立刻抵銷它。
   - inline script 另設 4 秒 fallback，React 若未掛載就移除 `js-motion`；`useReveal`
     掛載後會取消該計時器。
-  - 統計數字採 count-up，遞增中的數字 `aria-hidden`，真實數值以 `.sr-only` 並列，
-    避免螢幕閱讀器逐格朗讀。
-  - 動效時長收斂為 `--dur-1..4`（120/200/320/480ms），曲線只用
-    `cubic-bezier(0.16, 1, 0.3, 1)` 與 `cubic-bezier(0.4, 0, 0.2, 1)`，不使用任何
-    回彈（bounce／elastic）曲線。`prefers-reduced-motion: reduce` 下停用整個動效引擎
-    且強制兩種進場屬性皆可見。
+  - `prefers-reduced-motion: reduce` 時不啟用進場隱藏，並縮短 CSS 動畫與過場。
 
 ### 自動化稽核
 
-七套 Playwright 稽核（使用本機 Brave 執行檔）涵蓋版面、字體、動效、深淺主題、
-平台偏好與可重播進場，目前 **204 項全數通過**：
+先前文件記錄了七套 Playwright 稽核；其結果屬於歷史紀錄，並非本次視覺調整後的驗證結果：
 
 | 稽核 | 項數 | 涵蓋 |
 | --- | --- | --- |
