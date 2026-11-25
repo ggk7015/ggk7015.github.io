@@ -45,7 +45,7 @@ export const profile = {
 } as const
 
 export const stats = [
-  { label: '公開 Repos', value: '8' },
+  { label: '精選作品', value: '5' },
   { label: '原創 Commit', value: '76' },
   { label: 'Stars', value: '1' },
 ] as const
@@ -153,7 +153,7 @@ export const projects: Project[] = [
   },
   {
     name: 'MCserver',
-    summary: 'Minecraft 伺服器部署專案，以容器化方式管理執行環境。',
+    summary: 'Discord／Minecraft 簽到機器人專案，包含容器化執行環境。',
     highlights: ['Dockerfile 建置流程'],
     stack: ['Python', 'Docker'],
     href: 'https://github.com/ggk7015/MCserver',

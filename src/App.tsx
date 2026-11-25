@@ -2,6 +2,7 @@ import Capabilities from './components/Capabilities'
 import Galaxy from './components/Galaxy'
 import Hero from './components/Hero'
 import Signal from './components/Signal'
+import SolarSystem from './components/SolarSystem'
 import SiteHeader from './components/SiteHeader'
 import Trajectory from './components/Trajectory'
 import Warp from './components/Warp'
@@ -29,6 +30,7 @@ export default function App() {
 
       <main id="main" className="page">
         <Hero onNavigate={go} />
+        <SolarSystem onNavigate={go} />
         <Work onBack={back} backLabel={backLabel} />
         <Trajectory onBack={back} backLabel={backLabel} />
         <Capabilities onBack={back} backLabel={backLabel} />

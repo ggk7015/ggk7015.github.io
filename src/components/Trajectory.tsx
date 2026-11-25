@@ -18,7 +18,7 @@ export default function Trajectory({ onBack, backLabel }: Props) {
           走過的<em className="hl">軌跡</em>
         </h2>
         <p className="section__note">
-          從上游專案讀懂架構，再自己重寫一遍。每一項都附上原始出處，避免把別人的設計說成自己的發明。
+          從第三方上游專案研究，到自建應用與裝置實作；各項經驗均標示來源，區分研究與自建。
         </p>
       </header>
 

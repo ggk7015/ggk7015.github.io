@@ -11,10 +11,13 @@ export type WarpTarget = {
 
 const HOME = 'top'
 const HOME_LABEL = '星圖'
+const UNIVERSE = 'universe'
+const UNIVERSE_LABEL = '太陽系'
 const TRAIL_LIMIT = 8
 
 export function labelOf(id: string): string {
   if (id === HOME) return HOME_LABEL
+  if (id === UNIVERSE) return UNIVERSE_LABEL
   return SECTIONS.find((section) => section.id === id)?.label ?? HOME_LABEL
 }
 
@@ -64,7 +67,10 @@ export function useSectionNav() {
     (id: string, label: string) => {
       // Above the first section we are still on the map, not on a planet.
       const workTop = document.getElementById('work')?.getBoundingClientRect().top ?? 0
-      const departure = workTop > window.innerHeight * 0.5 ? HOME : activeRef.current
+      const universe = document.getElementById(UNIVERSE)?.getBoundingClientRect()
+      const departure = universe && universe.top <= window.innerHeight * 0.5 && universe.bottom > window.innerHeight * 0.25
+        ? UNIVERSE
+        : workTop > window.innerHeight * 0.5 ? HOME : activeRef.current
       if (departure && departure !== id) {
         setTrail((prev) => {
           if (prev[prev.length - 1]?.id === departure) return prev

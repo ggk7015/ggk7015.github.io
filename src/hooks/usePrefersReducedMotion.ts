@@ -1,11 +1,20 @@
-import { useState } from 'react'
+import { useSyncExternalStore } from 'react'
 import { prefersReducedMotion } from '../lib/env'
 
 /**
- * Snapshot of the `prefers-reduced-motion` media query, read once on mount.
- * Callers use it to skip animation work outright rather than to scale it down.
+ * Subscribe to OS changes as well as the initial reduced-motion preference.
  */
 export function usePrefersReducedMotion(): boolean {
-  const [reduced] = useState(prefersReducedMotion)
-  return reduced
+  return useSyncExternalStore(subscribe, prefersReducedMotion, () => true)
+}
+
+function subscribe(onChange: () => void): () => void {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return () => {}
+  const query = window.matchMedia('(prefers-reduced-motion: reduce)')
+  if (typeof query.addEventListener === 'function') {
+    query.addEventListener('change', onChange)
+    return () => query.removeEventListener('change', onChange)
+  }
+  query.addListener(onChange)
+  return () => query.removeListener(onChange)
 }

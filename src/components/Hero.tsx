@@ -48,8 +48,11 @@ export default function Hero({ onNavigate }: Props) {
           </div>
 
           <div className="hero__actions" data-reveal style={stagger(5)}>
+            <a className="btn btn--primary" href="#universe">
+              探索太陽系 <span className="btn__glyph" aria-hidden="true">✳</span>
+            </a>
             <a
-              className="btn btn--primary"
+              className="btn btn--ghost"
               href="#work"
               onClick={(event) => jump(event, 'work', '作品')}
             >
