@@ -58,6 +58,10 @@
 .solar-scene { position: absolute; inset: 0; touch-action: pan-y; }
 .solar-scene canvas { display: block; width: 100%; height: 100%; }
 .solar-scene__status,.solar-scene--loading { display: grid; place-items: center; padding: 24px; color: #c6ddce; font-size: .85rem; text-align: center; }
+.solar-scene__view-controls { position: absolute; z-index: 3; top: 54px; left: 16px; display: flex; flex-wrap: wrap; gap: 6px; max-width: calc(100% - 32px); }
+.solar-scene__view-controls button { min-width: 42px; min-height: 42px; padding: 6px 10px; border: 1px solid #b0c7b652; border-radius: 6px; background: #07191ddb; color: #e4d0a5; font: inherit; cursor: pointer; }
+.solar-scene__view-controls button:hover { border-color: #f1d089; color: #fff8e7; }
+.solar-scene__view-controls button:focus-visible { outline: 3px solid #f1d089; outline-offset: 3px; }
 .solar-scene__status { position: absolute; inset: 0; pointer-events: none; }
 .universe-map__sun-label { position: absolute; left: 24px; bottom: 26px; color: #dfca9a; font-size: .7rem; font-weight: 700; letter-spacing: .12em; pointer-events: none; }
 .universe-map__sun-label,.universe-map__corner { z-index: 2; }
@@ -80,10 +84,10 @@
 .planet-nav__number { margin-left: auto; color: #78988a; font-size: .58rem; }
 .universe__reset { align-self: center; min-height: 44px; padding: 8px 10px; border: 0; background: transparent; color: #c9d8c8; cursor: pointer; font-size: .72rem; white-space: nowrap; }
 .universe__reset:hover { color: #f7d993; }
-.universe__reset[aria-disabled='true'] { color: #829e90; cursor: default; }
+.universe__reset:disabled { color: #829e90; cursor: not-allowed; }
 .universe__frame :where(button,a):focus-visible { outline: 3px solid #f1d089; outline-offset: 3px; }
 .universe__note { margin-top: 18px; color: var(--ink-3); font-size: .75rem; line-height: 1.8; }
 @media (max-width: 1000px) { .universe__body { grid-template-columns: minmax(250px, 290px) minmax(0, 1fr); } .universe-panel { padding: 22px; } .universe__selector { grid-template-columns: 1fr; } .universe__selector-label { flex-direction: row; justify-content: space-between; } .universe__reset { justify-self: start; } }
 @media (max-width: 700px) { .universe { padding-top: 70px; } .universe__heading-meta,.universe__frame-id { display: none; } .universe__frame-top { padding-inline: 16px; } .universe__body { display: flex; flex-direction: column; } .universe-map { order: -1; min-height: 390px; } .universe-panel { border-right: 0; border-top: 1px solid #aac9b22a; padding: 24px; } .universe-panel__top { padding-bottom: 15px; } .universe-panel__planet { margin-top: 20px; } .universe-panel__description { max-width: 60ch; } .universe-panel__foot { display: none; } .universe__selector { padding: 18px 16px; gap: 12px; } .planet-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); } .universe-map__header { inset: 16px 16px auto; } .universe-map__sun-label { left: 16px; bottom: 18px; } .universe-map__hint { right: 16px; bottom: 18px; font-size: .65rem; } }
-@media (max-width: 380px) { .universe-map { min-height: 330px; } .universe-map__indicator { display: none; } .universe-map__hint { right: 10px; padding: 8px; } .universe-map__sun-label { left: 12px; } .planet-nav__number { display: none; } }
+@media (max-width: 380px) { .universe-map { min-height: 330px; } .universe-map__indicator { display: none; } .universe-map__hint { right: 10px; padding: 8px; } .universe-map__sun-label { left: 12px; } .planet-nav__number { display: none; } .solar-scene__view-controls { top: 48px; left: 10px; gap: 4px; max-width: calc(100% - 20px); } .solar-scene__view-controls button { min-width: 38px; min-height: 40px; padding-inline: 7px; } }
 @media (prefers-reduced-motion: reduce) { .universe *, .universe *::before, .universe *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }

@@ -41,6 +41,7 @@ export default function SolarSystemScene({ selected, onSelect, reducedMotion }: 
   const reducedMotionRef = useRef(reducedMotion)
   const invalidateRef = useRef<() => void>(() => {})
   const [status, setStatus] = useState<string | null>(null)
+  const controlsRef = useRef<OrbitControls | null>(null)
 
   useEffect(() => { onSelectRef.current = onSelect }, [onSelect])
   useEffect(() => {
@@ -106,6 +107,7 @@ export default function SolarSystemScene({ selected, onSelect, reducedMotion }: 
     controls.rotateSpeed = 0.65
     controls.zoomSpeed = 0.8
     controls.update()
+    controlsRef.current = controls
 
     const geometries = new Set<THREE.BufferGeometry>()
     const materials = new Set<THREE.Material>()
@@ -411,6 +413,7 @@ export default function SolarSystemScene({ selected, onSelect, reducedMotion }: 
       document.removeEventListener('visibilitychange', onVisibilityChange)
       controls.removeEventListener('change', onControlsChange)
       controls.dispose()
+      controlsRef.current = null
       canvas.removeEventListener('pointerdown', onPointerDown)
       document.removeEventListener('pointermove', onPointerMove, true)
       document.removeEventListener('pointerup', onPointerUp, true)
@@ -425,8 +428,23 @@ export default function SolarSystemScene({ selected, onSelect, reducedMotion }: 
     }
   }, [])
 
+  const rotateView = (azimuth: number, elevation: number) => {
+    const controls = controlsRef.current
+    if (!controls) return
+    controls.rotateLeft(azimuth)
+    controls.rotateUp(elevation)
+    controls.update()
+  }
+
   return (
     <div className="solar-scene" ref={containerRef}>
+      <div className="solar-scene__view-controls" role="group" aria-label="星圖視角旋轉控制">
+        <button type="button" aria-label="視角向左旋轉" onClick={() => rotateView(0.22, 0)}>←</button>
+        <button type="button" aria-label="視角向上旋轉" onClick={() => rotateView(0, 0.16)}>↑</button>
+        <button type="button" aria-label="視角向下旋轉" onClick={() => rotateView(0, -0.16)}>↓</button>
+        <button type="button" aria-label="視角向右旋轉" onClick={() => rotateView(-0.22, 0)}>→</button>
+        <button type="button" aria-label="重設星圖視角" onClick={() => controlsRef.current?.reset()}>重設視角</button>
+      </div>
       {status && <p className="solar-scene__status" role="alert">{status}</p>}
     </div>
   )

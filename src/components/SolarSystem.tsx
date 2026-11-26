@@ -106,7 +106,7 @@ export default function SolarSystem({ onNavigate }: Props) {
               </button>
             ))}
           </nav>
-          <button type="button" className="universe__reset" ref={resetRef} aria-disabled={selected === null} onClick={() => { if (selected !== null) { focusTarget.current = 'reset'; setSelected(null) } }}>回到太陽 <span aria-hidden="true">↺</span></button>
+            <button type="button" className="universe__reset" ref={resetRef} disabled={selected === null} onClick={() => { if (selected !== null) { focusTarget.current = 'reset'; setSelected(null) } }}>回到太陽 <span aria-hidden="true">↺</span></button>
         </div>
       </div>
       <p className="universe__note">✳ &nbsp; 衛星包含公開作品、既有自述經驗與第三方研究，並非 Git 分支清單；部分作品不在下方精選清單。模型比例與軌道為展示設計。</p>
